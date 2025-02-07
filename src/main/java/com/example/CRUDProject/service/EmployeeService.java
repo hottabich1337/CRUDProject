@@ -1,13 +1,15 @@
 package com.example.CRUDProject.service;
 
-import com.example.CRUDProject.Entity.Employee;
+import com.example.CRUDProject.entity.Employee;
 import com.example.CRUDProject.repository.EmployeeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class EmployeeService {
 
     @Autowired
@@ -17,30 +19,30 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
- /*   public Employee getEmployeeByEMail(String mail) {
-        return employeeRepository.findByEmail(mail);
-    }
-
-  */
 
     public Employee getEmployeeById(int id) {
         return employeeRepository.findById(id).get();
     }
 
     public Employee addEmployee(Employee employee) {
+        if (employee == null || employee.getName() == null || employee.getSurname() == null ||
+                employee.getEmail() == null || employee.getPassword() == null || employee.getRole() == null) {
+            System.out.println("Invalid data");
+        }
         return employeeRepository.save(employee);
     }
-    public void deleteEmployee(Employee employee) {
-        employeeRepository.delete(employee);
+    public void deleteEmployee(String email) {
+        if (!employeeRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Employee with email " + email + " does not exist");
+        }
+        System.out.println("Deleting employee with email " + email);
+        employeeRepository.removeEmployeeByEmail(email);
     }
 
 
-    /*  public Employee createEmployee(Employee employee) {
-        System.out.printf("Creating employee %s\n", employee);
-        Employee newEmployee = new Employee();
-        return newEmployee;
-
-    }*/
+    public Employee updateEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
 
 
 }
