@@ -7,6 +7,11 @@ import com.example.CRUDProject.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,23 +67,6 @@ public class EmployeeService {
     }
 
 
-    public List<Employee> filterEmployeeByName(String name) {
-        return employeeRepository.findAll().stream().filter(employee -> employee.getName().contains(name)).collect(Collectors.toList());
-    }
-
-    public List<Employee> filterEmployeeBySurName(String surName) {
-        return employeeRepository.findAll().stream().filter(employee -> employee.getSurname().contains(surName)).collect(Collectors.toList());
-    }
-
-    public List<Employee> filterEmployeeByEmail(String Email) {
-        return employeeRepository.findAll().stream().filter(employee -> employee.getEmail().contains(Email)).collect(Collectors.toList());
-    }
-
-    public List<Employee> filterEmployeeByRole(String role) {
-        return employeeRepository.findAll().stream().filter(employee -> employee.getRole().contains(role)).collect(Collectors.toList());
-    }
-
-
     public boolean updateEmployeeByEmail(String email, EmployeeDTO updatedEmployee) {
         EmployeeDTO existingEmployee = convertToDTO( employeeRepository.findByEmail(email));
         if (existingEmployee == null) {
@@ -94,23 +82,135 @@ public class EmployeeService {
         return true;
     }
 
-    public List<EmployeeDTO> filterAndSortEmployees(String name, String surname, String email, String role) {
-        // Получаем всех сотрудников
-        List<Employee> employees = employeeRepository.findAll();
+//    public List<EmployeeDTO> filterAndSortEmployees(
+//            String name, String surname, String email, String role,
+//            String filter, String sort
+//    ) {
+//        // Получаем всех сотрудников
+//        List<Employee> employees = employeeRepository.findAll();
+//
+//        // Фильтрация
+//        employees = employees.stream()
+//                .filter(e -> {
+//                    if ("name".equals(filter) && name != null && !e.getName().toLowerCase().contains(name.toLowerCase())) {
+//                        return false;
+//                    }
+//                    if ("surname".equals(filter) && surname != null && !e.getSurname().toLowerCase().contains(surname.toLowerCase())) {
+//                        return false;
+//                    }
+//                    if ("email".equals(filter) && email != null && !e.getEmail().toLowerCase().contains(email.toLowerCase())) {
+//                        return false;
+//                    }
+//                    if ("role".equals(filter) && role != null && !e.getRole().toLowerCase().equals(role.toLowerCase())) {
+//                        return false;
+//                    }
+//                    return true;
+//                })
+//                .collect(Collectors.toList());
+//
+//        // Сортировка
+//        if ("name".equals(sort)) {
+//            employees.sort((e1, e2) -> e1.getName().compareTo(e2.getName()));
+//        } else if ("role".equals(sort)) {
+//            employees.sort((e1, e2) -> e1.getRole().compareTo(e2.getRole()));
+//        }
+//
+//        // Преобразуем в DTO
+//        return employees.stream()
+//                .map(employeeMapper::employeeToEmployeeDTO)
+//                .collect(Collectors.toList());
+//    }
 
-        // Фильтрация и сортировка с помощью Stream API
+
+
+    //Метод для фильтрации и сортировки
+    public List<EmployeeDTO> filterAndSortEmployees(
+            String name, String surname, String email, String role,
+            String filter, String sort
+    ) {
+        // Вызываем метод репозитория для фильтрации и сортировки
+        List<Employee> employees = employeeRepository.filterAndSortEmployees(name, surname, email, role, filter, sort);
+
+        // Преобразуем результат в DTO
         return employees.stream()
-                .filter(e -> name == null || e.getName().toLowerCase().contains(name.toLowerCase()))
-                .filter(e -> surname == null || e.getSurname().toLowerCase().contains(surname.toLowerCase()))
-                .filter(e -> email == null || e.getEmail().toLowerCase().contains(email.toLowerCase()))
-                .filter(e -> role == null || e.getRole().toLowerCase().equals(role.toLowerCase()))
-                .sorted((e1, e2) -> {
-                    int nameCompare = e1.getName().compareTo(e2.getName());
-                    if (nameCompare != 0) return nameCompare;
-                    return e1.getRole().compareTo(e2.getRole());
-                })
                 .map(employeeMapper::employeeToEmployeeDTO)
                 .collect(Collectors.toList());
+    }
+
+
+    // Метод для фильтрации, сортировки и пагинации
+  /*  public List<EmployeeDTO> filterAndSortEmployees(
+            String name, String surname, String email, String role,
+            String filterField, // Поле для фильтрации
+            String sortField,   // Поле для сортировки
+            String sortDirection, // Направление (ASC/DESC)
+            Pageable pageable
+    ) {
+
+        // Формируем сортировку
+        Sort sort = createSort(sortField, sortDirection);
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+
+        // Выполняем запрос с пагинацией
+        Page<Employee> employeePage = employeeRepository.findAll(finalPageable);
+
+        // Преобразуем в DTO
+        return employeePage.getContent().stream()
+                .map(employeeMapper::employeeToEmployeeDTO)
+                .collect(Collectors.toList());
+    }
+*/
+
+
+
+    public Page<EmployeeDTO> filterAndSortEmployees(
+            String name, String surname, String email, String role,
+            String sortField, String sortDirection,
+            Pageable pageable
+    ) {
+        // Формируем Sort
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());
+        Sort sort = Sort.by(direction, sortField);
+
+        // Создаем Pageable с учетом сортировки
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+
+        // Выполняем запрос с фильтрацией
+        Page<Employee> employeePage = employeeRepository.findAllByNameContainingAndSurnameContainingAndEmailContainingAndRoleEquals(
+                name, surname, email, role,
+                finalPageable
+        );
+
+        // Преобразуем в DTO
+        return employeePage.map(employeeMapper::employeeToEmployeeDTO);
+    }
+
+
+
+    // Вспомогательный метод для создания Sort
+    private Sort createSort(String sortField, String sortDirection) {
+        String defaultSortField = "name";
+        String defaultSortDirection = "ASC";
+
+        String finalSortField = sortField != null && !sortField.isEmpty() ? sortField : defaultSortField;
+        String finalSortDirection = sortDirection != null && !sortDirection.isEmpty()
+                ? sortDirection.toUpperCase()
+                : defaultSortDirection;
+
+        // Проверка допустимых значений направления
+        if (!finalSortDirection.equals("ASC") && !finalSortDirection.equals("DESC")) {
+            finalSortDirection = defaultSortDirection;
+        }
+
+        return Sort.by(Sort.Direction.fromString(finalSortDirection), finalSortField);
     }
 
     public void deleteEmployee(String email) {

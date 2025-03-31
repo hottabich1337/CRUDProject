@@ -3,6 +3,9 @@ package com.example.CRUDProject.controller;
 import com.example.CRUDProject.dto.EmployeeDTO;
 import com.example.CRUDProject.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.CRUDProject.service.EmployeeService;
@@ -46,42 +49,22 @@ public class EmployeeController {
         return ResponseEntity.ok(employee);
     }
 
-//Фильтрация должна быть в одном контроллере
-    @GetMapping("/filterByName")
-    public ResponseEntity<List<Employee>> filterEmployeeByName(@RequestParam String name) {
-        List<Employee> sortedEmployeeList = employeeService.filterEmployeeByName(name);
-        return ResponseEntity.ok(sortedEmployeeList);
-    }
 
+    // Метод для фильтрации, сортировки и пагинации
     @GetMapping("/filter")
-    public List<EmployeeDTO> filterAndSortEmployees(
+    public Page<EmployeeDTO> filterAndSortEmployees(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String surname,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String role
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) String sortField,   // Поле для сортировки
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection, // Направление (ASC/DESC)
+            @PageableDefault(page = 0, size = 3) Pageable pageable // Параметры пагинации
     ) {
-        return employeeService.filterAndSortEmployees(name, surname, email, role);
-    }
-
-    @GetMapping("/filterBySurName")
-    public ResponseEntity<List<Employee>> filterEmployeeBySurName(@RequestParam String surName) {
-        List<Employee> sortedEmployeeList = employeeService.filterEmployeeBySurName(surName);
-        return ResponseEntity.ok(sortedEmployeeList);
+        return employeeService.filterAndSortEmployees(name, surname, email, role, sortField, sortDirection, pageable);
     }
 
 
-    @GetMapping("/filterByEmail")
-    public ResponseEntity<List<Employee>> filterEmployeeByEmail(@RequestParam String email) {
-        List<Employee> sortedEmployeeList = employeeService.getAllEmployees().stream().filter(employee -> employee.getEmail().contains(email)).collect(Collectors.toList());
-        return ResponseEntity.ok(sortedEmployeeList);
-    }
-
-
-    @GetMapping("/filterByRole")
-    public ResponseEntity<List<Employee>> filterEmployeeByRole (@RequestParam String role) {
-        List<Employee> sortedEmployeeList = employeeService.getAllEmployees().stream().filter(employee -> employee.getRole().contains(role)).collect(Collectors.toList());
-        return ResponseEntity.ok(sortedEmployeeList);
-    }
 
   /*  @GetMapping("/sortByName")
     public ResponseEntity<List<Employee>> sortEmployeeByName() {
