@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Integer>, JpaSpecificationExecutor {
+public interface EmployeeRepository extends JpaRepository<Employee, Integer>, JpaSpecificationExecutor<Employee> {
 
     List<Employee> getEmployeeByEmail(String email);
 
@@ -42,12 +42,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>, Jp
     );
 
 
-    // Метод для фильтрации
-    Page<Employee> findAllByNameContainingAndSurnameContainingAndEmailContainingAndRoleEquals(
-            @Param("name") String name,
-            @Param("surname") String surname,
-            @Param("email") String email,
-            @Param("role") String role,
+
+    Page<Employee> findAll(
             Pageable pageable
     );
+    List<Employee> findByRole(String role);
 }

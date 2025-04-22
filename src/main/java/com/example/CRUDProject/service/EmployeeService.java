@@ -12,9 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
+import com.example.CRUDProject.specification.EmployeeSpecifications;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,47 +87,6 @@ public class EmployeeService {
         return true;
     }
 
-//    public List<EmployeeDTO> filterAndSortEmployees(
-//            String name, String surname, String email, String role,
-//            String filter, String sort
-//    ) {
-//        // Получаем всех сотрудников
-//        List<Employee> employees = employeeRepository.findAll();
-//
-//        // Фильтрация
-//        employees = employees.stream()
-//                .filter(e -> {
-//                    if ("name".equals(filter) && name != null && !e.getName().toLowerCase().contains(name.toLowerCase())) {
-//                        return false;
-//                    }
-//                    if ("surname".equals(filter) && surname != null && !e.getSurname().toLowerCase().contains(surname.toLowerCase())) {
-//                        return false;
-//                    }
-//                    if ("email".equals(filter) && email != null && !e.getEmail().toLowerCase().contains(email.toLowerCase())) {
-//                        return false;
-//                    }
-//                    if ("role".equals(filter) && role != null && !e.getRole().toLowerCase().equals(role.toLowerCase())) {
-//                        return false;
-//                    }
-//                    return true;
-//                })
-//                .collect(Collectors.toList());
-//
-//        // Сортировка
-//        if ("name".equals(sort)) {
-//            employees.sort((e1, e2) -> e1.getName().compareTo(e2.getName()));
-//        } else if ("role".equals(sort)) {
-//            employees.sort((e1, e2) -> e1.getRole().compareTo(e2.getRole()));
-//        }
-//
-//        // Преобразуем в DTO
-//        return employees.stream()
-//                .map(employeeMapper::employeeToEmployeeDTO)
-//                .collect(Collectors.toList());
-//    }
-
-
-
     //Метод для фильтрации и сортировки
     public List<EmployeeDTO> filterAndSortEmployees(
             String name, String surname, String email, String role,
@@ -138,62 +102,107 @@ public class EmployeeService {
     }
 
 
-    // Метод для фильтрации, сортировки и пагинации
-  /*  public List<EmployeeDTO> filterAndSortEmployees(
-            String name, String surname, String email, String role,
-            String filterField, // Поле для фильтрации
-            String sortField,   // Поле для сортировки
-            String sortDirection, // Направление (ASC/DESC)
-            Pageable pageable
-    ) {
 
-        // Формируем сортировку
-        Sort sort = createSort(sortField, sortDirection);
-        Pageable finalPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                sort
-        );
-
-        // Выполняем запрос с пагинацией
-        Page<Employee> employeePage = employeeRepository.findAll(finalPageable);
-
-        // Преобразуем в DTO
-        return employeePage.getContent().stream()
-                .map(employeeMapper::employeeToEmployeeDTO)
-                .collect(Collectors.toList());
-    }
-*/
-
-
-
-    public Page<EmployeeDTO> filterAndSortEmployees(
+/*    public Page<EmployeeDTO> filterAndSortEmployees(
             String name, String surname, String email, String role,
             String sortField, String sortDirection,
             Pageable pageable
     ) {
-        // Формируем Sort
+        // Обработка направления сортировки
         Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());
+        if (direction == null) {
+            direction = Sort.Direction.ASC; // Значение по умолчанию
+        }
         Sort sort = Sort.by(direction, sortField);
 
-        // Создаем Pageable с учетом сортировки
+        // Создание Pageable с учетом сортировки
         Pageable finalPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 sort
         );
 
-        // Выполняем запрос с фильтрацией
-        Page<Employee> employeePage = employeeRepository.findAllByNameContainingAndSurnameContainingAndEmailContainingAndRoleEquals(
-                name, surname, email, role,
-                finalPageable
+        // Удаление пустых параметров
+        name = (name != null && !name.isEmpty()) ? name : null;
+        surname = (surname != null && !surname.isEmpty()) ? surname : null;
+        email = (email != null && !email.isEmpty()) ? email : null;
+        role = (role != null && !role.isEmpty()) ? role : null;
+
+        // Вызов метода репозитория
+        try {
+            Page<Employee> employeePage = employeeRepository.findAll(finalPageable);
+            return employeePage.map(employeeMapper::employeeToEmployeeDTO);
+        } catch (Exception e) {
+            e.printStackTrace(); // Вывод ошибки в консоль
+            throw new RuntimeException("Error occurred while filtering employees", e);
+        }
+    }
+*/
+
+    // Метод для фильтрации, сортировки и пагинации
+    public Page<EmployeeDTO> filterAndSortByName(
+            String name,
+            String sortDirection,
+            Pageable pageable
+    ) {
+        // Создание спецификации для фильтрации по имени
+        Specification<Employee> specification = EmployeeSpecifications.nameContains(name);
+
+        // Настройка сортировки
+        Sort.Direction direction = Optional.ofNullable(sortDirection)
+                .map(dir -> dir.toUpperCase())
+                .filter(dir -> dir.equals("ASC") || dir.equals("DESC"))
+                .map(Sort.Direction::fromString)
+                .orElse(Sort.Direction.ASC); // Значение по умолчанию
+
+        Sort sort = Sort.by(direction, "name");
+
+        // Создание Pageable с учётом сортировки
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
         );
 
-        // Преобразуем в DTO
+        // Выполнение запроса
+        Page<Employee> employeePage = employeeRepository.findAll(specification, finalPageable);
+
+        // Преобразование в DTO
         return employeePage.map(employeeMapper::employeeToEmployeeDTO);
     }
 
 
+    // Метод для фильтрации, сортировки и пагинации
+    public Page<EmployeeDTO> filterAndSortEmployees(
+            String name, String surName ,String email ,String role,
+            String sortField, String sortDirection,
+            Pageable pageable
+    ) {
+        // Создание спецификации для фильтрации
+        Specification<Employee> specification = EmployeeSpecifications.filterBy(name,surName,email, role);
+
+        // Настройка сортировки
+        Sort.Direction direction = Optional.ofNullable(sortDirection)
+                .map(dir -> dir.toUpperCase())
+                .filter(dir -> dir.equals("ASC") || dir.equals("DESC"))
+                .map(Sort.Direction::fromString)
+                .orElse(Sort.Direction.ASC); // Значение по умолчанию
+
+        Sort sort = Sort.by(direction, sortField);
+
+        // Создание Pageable с учётом сортировки
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+
+        // Выполнение запроса
+        Page<Employee> employeePage = employeeRepository.findAll(specification, finalPageable);
+
+        // Преобразование в DTO
+        return employeePage.map(employeeMapper::employeeToEmployeeDTO);
+    }
 
     // Вспомогательный метод для создания Sort
     private Sort createSort(String sortField, String sortDirection) {
