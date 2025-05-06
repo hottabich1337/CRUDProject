@@ -39,36 +39,22 @@ public class EmployeeService {
         return new EmployeeDTO(employee);
     }
 
-    public Employee convertToEntity(EmployeeDTO dto) {
-        Employee employee ;
-        if (employeeRepository.existsByEmail(dto.getEmail())) {
-            employee = employeeRepository.findByEmail(dto.getEmail());
-        }else {
-            employee = new Employee();
-        }
-        employee.setName(dto.getName());
-        employee.setSurname(dto.getSurname());
-        employee.setEmail(dto.getEmail());
-        employee.setRole(dto.getRole());
-        employee.setPassword(dto.getPassword());
-        return employee;
+    public EmployeeDTO getEmployeeById(int id) {
+        return convertToDTO(employeeRepository.findById(id).get());
     }
 
-    public Employee getEmployeeById(int id) {
-        return employeeRepository.findById(id).get();
-    }
     public Employee getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email);
     }
 
 
-    public Employee addEmployee(EmployeeDTO employeeDto) {
+    public void addEmployee(EmployeeDTO employeeDto) {
         if (employeeDto == null || employeeDto.getName() == null || employeeDto.getSurname() == null ||
                 employeeDto.getEmail() == null || employeeDto.getPassword() == null || employeeDto.getRole() == null) {
             System.out.println("Invalid data");
         }
         Employee employee = employeeMapper.employeeDTOToEmployee(employeeDto); // Преобразуем DTO в Entity
-        return employeeRepository.save(employee);
+        employeeRepository.save(employee);
     }
 
 
@@ -101,43 +87,6 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-
-
-/*    public Page<EmployeeDTO> filterAndSortEmployees(
-            String name, String surname, String email, String role,
-            String sortField, String sortDirection,
-            Pageable pageable
-    ) {
-        // Обработка направления сортировки
-        Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());
-        if (direction == null) {
-            direction = Sort.Direction.ASC; // Значение по умолчанию
-        }
-        Sort sort = Sort.by(direction, sortField);
-
-        // Создание Pageable с учетом сортировки
-        Pageable finalPageable = PageRequest.of(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                sort
-        );
-
-        // Удаление пустых параметров
-        name = (name != null && !name.isEmpty()) ? name : null;
-        surname = (surname != null && !surname.isEmpty()) ? surname : null;
-        email = (email != null && !email.isEmpty()) ? email : null;
-        role = (role != null && !role.isEmpty()) ? role : null;
-
-        // Вызов метода репозитория
-        try {
-            Page<Employee> employeePage = employeeRepository.findAll(finalPageable);
-            return employeePage.map(employeeMapper::employeeToEmployeeDTO);
-        } catch (Exception e) {
-            e.printStackTrace(); // Вывод ошибки в консоль
-            throw new RuntimeException("Error occurred while filtering employees", e);
-        }
-    }
-*/
 
     // Метод для фильтрации, сортировки и пагинации
     public Page<EmployeeDTO> filterAndSortByName(
@@ -204,23 +153,6 @@ public class EmployeeService {
         return employeePage.map(employeeMapper::employeeToEmployeeDTO);
     }
 
-    // Вспомогательный метод для создания Sort
-    private Sort createSort(String sortField, String sortDirection) {
-        String defaultSortField = "name";
-        String defaultSortDirection = "ASC";
-
-        String finalSortField = sortField != null && !sortField.isEmpty() ? sortField : defaultSortField;
-        String finalSortDirection = sortDirection != null && !sortDirection.isEmpty()
-                ? sortDirection.toUpperCase()
-                : defaultSortDirection;
-
-        // Проверка допустимых значений направления
-        if (!finalSortDirection.equals("ASC") && !finalSortDirection.equals("DESC")) {
-            finalSortDirection = defaultSortDirection;
-        }
-
-        return Sort.by(Sort.Direction.fromString(finalSortDirection), finalSortField);
-    }
 
     public void deleteEmployee(String email) {
         if (!employeeRepository.existsByEmail(email)) {

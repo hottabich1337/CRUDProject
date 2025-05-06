@@ -1,11 +1,11 @@
 package com.example.CRUDProject.dto;
 
 import com.example.CRUDProject.entity.Employee;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class EmployeeDTO {
     private String name;
     private String surname;
@@ -21,7 +21,7 @@ public class EmployeeDTO {
     }
 
     public EmployeeDTO() {}
-    public String getName() {
+    /*public String getName() {
         return name;
     }
 
@@ -60,4 +60,6 @@ public class EmployeeDTO {
     public void setRole(String role) {
         this.role = role;
     }
+    */
+
 }

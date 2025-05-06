@@ -20,13 +20,13 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 //входные и выходные данные это DTO
-    @PostMapping("/addEmployee")
-    public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
-
-        return employeeService.addEmployee(employeeDTO);
+    @PostMapping()
+    public ResponseEntity<EmployeeDTO> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeService.addEmployee(employeeDTO);
+        return ResponseEntity.ok(employeeDTO);
     }
 //здесь нужен PutMapping
-    @PutMapping("/updateEmployee")
+    @PutMapping()
     public ResponseEntity<String> updateEmployee(@RequestBody EmployeeDTO updatedEmployee){
         String email = updatedEmployee.getEmail();
         boolean isUpdated = employeeService.updateEmployeeByEmail(email, updatedEmployee);
@@ -44,44 +44,11 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/employeeInfo")
-    public ResponseEntity<Employee> getEmployeeByEmail(@RequestParam String email) {
-        Employee employee = employeeService.getEmployeeByEmail(email);
-        return ResponseEntity.ok(employee);
+    @GetMapping()
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@RequestParam Integer id) {
+        EmployeeDTO employeeDTO = employeeService.getEmployeeById(id);
+        return ResponseEntity.ok(employeeDTO);
     }
-
-
-   /* @GetMapping("/filter")
-    public ResponseEntity<Page<EmployeeDTO>> filterAndSortEmployees(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String surname,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String role,
-            @RequestParam(required = false, defaultValue = "name") String sortField,
-            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            @PageableDefault(page = 0, size = 2) Pageable pageable
-    ) {
-        try {
-            Page<EmployeeDTO> result = employeeService.filterAndSortEmployees(name, surname, email, role, sortField, sortDirection, pageable);
-            if (result.isEmpty()) {
-                return ResponseEntity.noContent().build(); // Возвращаем 204 No Content, если результат пустой
-            }
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Возвращаем 500 Internal Server Error
-        }
-    }*/
-
-    @GetMapping("/filter-by-name")
-    public Page<EmployeeDTO> filterAndSortByName(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            @PageableDefault(page = 0, size = 3) Pageable pageable
-    ) {
-        return employeeService.filterAndSortByName(name, sortDirection, pageable);
-    }
-
 
 
     @GetMapping("/filter")
@@ -96,14 +63,5 @@ public class EmployeeController {
     ) {
         return employeeService.filterAndSortEmployees(name,surName,email, role, sortField, sortDirection, pageable);
     }
-   /* @GetMapping("/sortByName")
-    public ResponseEntity<List<Employee>> sortEmployeeByName() {
-        List<Employee> employees = employeeService.getAllEmployees().stream().sorted().filter(employee -> employee.getName().).collect(Collectors.toList());
-        return ResponseEntity.ok(employees);
-    }*/
 
-    @GetMapping("/home")
-    public String home() {
-        return "Welcome to the home page!";
-    }
 }
