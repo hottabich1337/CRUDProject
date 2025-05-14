@@ -2,6 +2,7 @@ package com.example.CRUDProject.entity;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 import org.springframework.context.annotation.Primary;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Client client;
 
 

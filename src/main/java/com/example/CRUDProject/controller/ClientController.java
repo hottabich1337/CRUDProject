@@ -26,4 +26,9 @@ public class ClientController {
         clientService.updateClient(clientDTO);
         return ResponseEntity.ok(clientDTO);
     }
+
+    @DeleteMapping("/deleteClient")
+    public void deleteClient(@RequestParam Integer id) {
+        clientService.deleteClient(id);
+    }
 }

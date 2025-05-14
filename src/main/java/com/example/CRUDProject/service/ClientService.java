@@ -44,4 +44,10 @@ public class ClientService {
         clientRepository.save(existingClient);
     }
 
+
+    public void deleteClient(Integer id) {
+        Client existingClient = clientRepository.findById(id).get();
+        clientRepository.delete(existingClient);
+    }
+
 }
