@@ -10,6 +10,28 @@ import java.util.List;
 @Entity
 @Table(name = "client")
 public class Client {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+
+    @Column(name = "name", nullable = false, length = 255)
+    private String name;
+
+    @Column(name = "surname", nullable = false, length = 255)
+    private String surname;
+
+    @Column(name = "email", nullable = false, length = 255, unique = true) // NOT NULL
+    private String email;
+
+    @Column(name = "phone", nullable = false, length = 255, unique = true) // NOT NULL
+    private String phone;
+
+    @OneToMany
+    @Column(name = "orderList", length = 255) // NOT NULL
+    private List<Order> orders;
+
     public Integer getId() {
         return id;
     }
@@ -42,12 +64,12 @@ public class Client {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public List<Order> getOrders() {
@@ -58,29 +80,4 @@ public class Client {
         this.orders = orders;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
-
-    @Column(name = "surname", nullable = false, length = 255)
-    private String surname;
-
-    @Column(name = "email", nullable = false, length = 255, unique = true) // NOT NULL
-    private String email;
-
-    @Column(name = "phoneNumber", nullable = false, length = 255, unique = true) // NOT NULL
-    private String phoneNumber;
-
-    @OneToMany
-    @Column(name = "orderList", nullable = false, length = 255, unique = true) // NOT NULL
-    private List<Order> orders;
-
-
-    public ClientDTO convertToDTO(Client client) {
-        return new ClientDTO(client);
-    }
 }

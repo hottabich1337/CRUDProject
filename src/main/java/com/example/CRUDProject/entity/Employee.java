@@ -27,10 +27,6 @@ public class Employee {
     @Column(name = "role", nullable = false, length = 255)
     private String role;
 
-    public EmployeeDTO convertToDTO(Employee employee) {
-        return new EmployeeDTO(employee);
-    }
-
 
     public Integer getId() {
         return id;

@@ -10,5 +10,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ClientMapper {
     ClientDTO clientToClientDTO(Client client);
-    Employee clientDTOToClient(ClientDTO clientDTO);
+    Client clientDTOToClient(ClientDTO clientDTO);
 }
