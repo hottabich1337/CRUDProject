@@ -6,6 +6,7 @@ import com.example.CRUDProject.entity.Client;
 import com.example.CRUDProject.entity.Employee;
 import com.example.CRUDProject.mapper.ClientMapper;
 import com.example.CRUDProject.repository.ClientRepository;
+import com.example.CRUDProject.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class ClientService {
 
     @Autowired
     ClientMapper clientMapper;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
 
     public void addClient(ClientDTO clientDTO) {
@@ -28,4 +31,17 @@ public class ClientService {
 
         clientRepository.save(client);
     }
+
+    public void updateClient(ClientDTO clientDTO) {
+
+        Client existingClient = clientRepository.findByEmail(clientDTO.getEmail());
+        ClientDTO exsistingClientDTO = clientMapper.clientToClientDTO(existingClient);
+        if (exsistingClientDTO != null) {
+            existingClient.setName(clientDTO.getName()!=null ? clientDTO.getName():exsistingClientDTO.getName());
+            existingClient.setSurname(clientDTO.getSurname()!=null ? clientDTO.getSurname():exsistingClientDTO.getSurname());
+            existingClient.setPhone(clientDTO.getPhone()!=null ? clientDTO.getPhone():exsistingClientDTO.getPhone());
+        }
+        clientRepository.save(existingClient);
+    }
+
 }

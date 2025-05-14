@@ -28,8 +28,7 @@ public class Client {
     @Column(name = "phone", nullable = false, length = 255, unique = true) // NOT NULL
     private String phone;
 
-    @OneToMany
-    @Column(name = "orderList", length = 255) // NOT NULL
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // NOT NULL
     private List<Order> orders;
 
     public Integer getId() {

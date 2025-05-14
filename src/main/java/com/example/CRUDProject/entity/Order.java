@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Primary;
 import java.util.Date;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -21,6 +21,7 @@ public class Order {
     private String orderStatus;
 
     @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 
 

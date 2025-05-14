@@ -5,10 +5,7 @@ import com.example.CRUDProject.dto.EmployeeDTO;
 import com.example.CRUDProject.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/client")
@@ -17,9 +14,16 @@ public class ClientController {
     @Autowired
     ClientService clientService;
 
-    @PostMapping("/addClient")
+    @PostMapping("")
     public ResponseEntity<ClientDTO> addEmployee(@RequestBody ClientDTO clientDTO) {
         clientService.addClient(clientDTO);
+        return ResponseEntity.ok(clientDTO);
+    }
+
+
+    @PostMapping("/update")
+    public ResponseEntity<ClientDTO> updateClient(@RequestBody ClientDTO clientDTO) {
+        clientService.updateClient(clientDTO);
         return ResponseEntity.ok(clientDTO);
     }
 }
