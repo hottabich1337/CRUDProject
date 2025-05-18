@@ -3,8 +3,10 @@ package com.example.CRUDProject.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,7 +18,8 @@ public class Order {
     private int id;
 
     @Column
-    private Date orderCreationDate;
+    @CreationTimestamp
+    private LocalDate orderCreationDate;
 
     @Column
     private String orderStatus;
@@ -26,5 +29,35 @@ public class Order {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Client client;
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDate getOrderCreationDate() {
+        return orderCreationDate;
+    }
+
+    public void setOrderCreationDate(LocalDate orderCreationDate) {
+        this.orderCreationDate = orderCreationDate;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }

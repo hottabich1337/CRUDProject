@@ -44,6 +44,10 @@ public class ClientService {
         clientRepository.save(existingClient);
     }
 
+    public ClientDTO clientInfo(Integer id) {
+        Client existingClient = clientRepository.findById(id).get();
+        return clientMapper.clientToClientDTO(existingClient);
+    }
 
     public void deleteClient(Integer id) {
         Client existingClient = clientRepository.findById(id).get();

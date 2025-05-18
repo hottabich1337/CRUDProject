@@ -2,6 +2,7 @@ package com.example.CRUDProject.controller;
 
 import com.example.CRUDProject.dto.ClientDTO;
 import com.example.CRUDProject.dto.EmployeeDTO;
+import com.example.CRUDProject.mapper.ClientMapper;
 import com.example.CRUDProject.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,11 @@ public class ClientController {
     @DeleteMapping("/deleteClient")
     public void deleteClient(@RequestParam Integer id) {
         clientService.deleteClient(id);
+    }
+
+    @GetMapping("/clientInfo")
+    public ResponseEntity<ClientDTO> getClientInfo(@RequestParam Integer id) {
+        ClientDTO clientDTO = clientService.clientInfo(id);
+        return ResponseEntity.ok(clientDTO);
     }
 }
