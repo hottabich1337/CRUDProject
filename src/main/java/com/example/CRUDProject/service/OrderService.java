@@ -26,4 +26,15 @@ public class OrderService {
         order.setClient(client);
         orderRepository.save(order);
     }
+
+    public void updateOrder(Integer orderId,String orderStatus){
+        Order order = orderRepository.findById(orderId).get();
+        order.setOrderStatus(orderStatus);
+        orderRepository.save(order);
+    }
+
+    public void deleteOrder(Integer orderId){
+        Order order = orderRepository.findById(orderId).get();
+        orderRepository.delete(order);
+    }
 }
