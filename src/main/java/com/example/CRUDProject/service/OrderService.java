@@ -33,6 +33,11 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    public OrderDTO getOrderInfo(Integer orderId){
+        Order order = orderRepository.findById(orderId).get();
+        return orderMapper.OrderToOrderDTO(order);
+    }
+
     public void deleteOrder(Integer orderId){
         Order order = orderRepository.findById(orderId).get();
         orderRepository.delete(order);

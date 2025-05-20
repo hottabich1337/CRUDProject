@@ -5,6 +5,9 @@ import com.example.CRUDProject.dto.EmployeeDTO;
 import com.example.CRUDProject.mapper.ClientMapper;
 import com.example.CRUDProject.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +40,19 @@ public class ClientController {
     public ResponseEntity<ClientDTO> getClientInfo(@RequestParam Integer id) {
         ClientDTO clientDTO = clientService.clientInfo(id);
         return ResponseEntity.ok(clientDTO);
+    }
+
+
+    @GetMapping("/filter")
+    public Page<ClientDTO> filterAndSortClients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String surName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false, defaultValue = "name") String sortField,
+            @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+            @PageableDefault(page = 2, size = 3) Pageable pageable
+    ) {
+        return clientService.filterAndSortClients(name,surName,email, phone, sortField, sortDirection, pageable);
     }
 }

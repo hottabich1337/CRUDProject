@@ -21,7 +21,6 @@ public class OrderController {
         return ResponseEntity.ok().body(orderDTO);
     }
 
-
     @PostMapping("/updateOrder")
     public void updateOrder(@RequestParam Integer id,@RequestParam String orderStatus) {
         orderService.updateOrder(id, orderStatus);
@@ -31,4 +30,11 @@ public class OrderController {
     public void deleteOrder(@RequestParam Integer id) {
         orderService.deleteOrder(id);
     }
+
+    @GetMapping("/orderInfo")
+    public ResponseEntity<OrderDTO> getOrder(@RequestParam Integer id) {
+        return ResponseEntity.ok(orderService.getOrderInfo(id));
+    }
+
+
 }

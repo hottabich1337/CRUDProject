@@ -7,8 +7,18 @@ import com.example.CRUDProject.entity.Employee;
 import com.example.CRUDProject.mapper.ClientMapper;
 import com.example.CRUDProject.repository.ClientRepository;
 import com.example.CRUDProject.repository.EmployeeRepository;
+import com.example.CRUDProject.specification.ClientSpecification;
+import com.example.CRUDProject.specification.EmployeeSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -46,12 +56,45 @@ public class ClientService {
 
     public ClientDTO clientInfo(Integer id) {
         Client existingClient = clientRepository.findById(id).get();
-        return clientMapper.clientToClientDTO(existingClient);
+        ClientDTO clientDTO = clientMapper.clientToClientDTO(existingClient);
+        clientDTO.setOrders(existingClient.getOrders());
+        return clientDTO;
     }
 
     public void deleteClient(Integer id) {
         Client existingClient = clientRepository.findById(id).get();
         clientRepository.delete(existingClient);
+    }
+
+    public Page<ClientDTO> filterAndSortClients( String name, String surName ,String email ,String phone,
+        String sortField, String sortDirection,
+        Pageable pageable){
+
+        // Создание спецификации для фильтрации по имени
+        Specification<Client> specification = ClientSpecification.nameContains(sortField);
+
+        // Настройка сортировки
+        Sort.Direction direction = Optional.ofNullable(sortDirection)
+                .map(dir -> dir.toUpperCase())
+                .filter(dir -> dir.equals("ASC") || dir.equals("DESC"))
+                .map(Sort.Direction::fromString)
+                .orElse(Sort.Direction.ASC); // Значение по умолчанию
+
+        Sort sort = Sort.by(direction, "name");
+
+        // Создание Pageable с учётом сортировки
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+
+        // Выполнение запроса
+        Page<Client> clientPage = clientRepository.findAll(specification, finalPageable);
+
+        // Преобразование в DTO
+        return clientPage.map(clientMapper::clientToClientDTO);
+
     }
 
 }
