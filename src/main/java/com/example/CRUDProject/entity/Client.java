@@ -2,6 +2,7 @@ package com.example.CRUDProject.entity;
 
 import com.example.CRUDProject.dto.ClientDTO;
 import com.example.CRUDProject.dto.EmployeeDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class Client {
     private String phone;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // NOT NULL
+    @JsonManagedReference
     private List<Order> orders;
 
     public Integer getId() {

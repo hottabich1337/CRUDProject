@@ -1,6 +1,7 @@
 package com.example.CRUDProject.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +28,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "client_id")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @JsonBackReference
     private Client client;
 
     public int getId() {
