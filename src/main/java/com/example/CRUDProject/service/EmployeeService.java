@@ -89,7 +89,7 @@ public class EmployeeService {
 
 
     // Метод для фильтрации, сортировки и пагинации
-    public Page<EmployeeDTO> filterAndSortByName(
+    /*  public Page<EmployeeDTO> filterAndSortByName(
             String name,
             String sortDirection,
             Pageable pageable
@@ -119,7 +119,7 @@ public class EmployeeService {
         // Преобразование в DTO
         return employeePage.map(employeeMapper::employeeToEmployeeDTO);
     }
-
+*/
 
     // Метод для фильтрации, сортировки и пагинации
     public Page<EmployeeDTO> filterAndSortEmployees(

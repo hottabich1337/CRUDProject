@@ -66,12 +66,12 @@ public class ClientService {
         clientRepository.delete(existingClient);
     }
 
-    public Page<ClientDTO> filterAndSortClients( String name, String surName ,String email ,String phone,
+    public Page<ClientDTO> filterAndSortyClients( String name, String surName ,String email ,String phone,
         String sortField, String sortDirection,
         Pageable pageable){
 
         // Создание спецификации для фильтрации по имени
-        Specification<Client> specification = ClientSpecification.nameContains(sortField);
+        Specification<Client> specification = ClientSpecification.nameContains(name);
 
         // Настройка сортировки
         Sort.Direction direction = Optional.ofNullable(sortDirection)
@@ -95,6 +95,40 @@ public class ClientService {
         // Преобразование в DTO
         return clientPage.map(clientMapper::clientToClientDTO);
 
+    }
+
+
+
+    // Метод для фильтрации, сортировки и пагинации
+    public Page<ClientDTO> filterAndSortClients(
+            String name, String surName ,String email ,String phone,
+            String sortField, String sortDirection,
+            Pageable pageable
+    ) {
+        // Создание спецификации для фильтрации
+        Specification<Client> specification = ClientSpecification.filterBy(name,surName,email, phone);
+
+        // Настройка сортировки
+        Sort.Direction direction = Optional.ofNullable(sortDirection)
+                .map(dir -> dir.toUpperCase())
+                .filter(dir -> dir.equals("ASC") || dir.equals("DESC"))
+                .map(Sort.Direction::fromString)
+                .orElse(Sort.Direction.ASC); // Значение по умолчанию
+
+        Sort sort = Sort.by(direction, sortField);
+
+        // Создание Pageable с учётом сортировки
+        Pageable finalPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+
+        // Выполнение запроса
+        Page<Client> clientPage = clientRepository.findAll(specification, finalPageable);
+
+        // Преобразование в DTO
+        return clientPage.map(clientMapper::clientToClientDTO);
     }
 
 }

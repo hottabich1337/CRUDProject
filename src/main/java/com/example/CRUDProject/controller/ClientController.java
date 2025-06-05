@@ -51,7 +51,7 @@ public class ClientController {
             @RequestParam(required = false) String phone,
             @RequestParam(required = false, defaultValue = "name") String sortField,
             @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-            @PageableDefault(page = 2, size = 3) Pageable pageable
+            @PageableDefault(page = 0, size = 30) Pageable pageable
     ) {
         return clientService.filterAndSortClients(name,surName,email, phone, sortField, sortDirection, pageable);
     }
