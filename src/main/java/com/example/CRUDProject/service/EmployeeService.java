@@ -70,9 +70,9 @@ public class EmployeeService {
         existingEmployee.setPassword(updatedEmployee.getPassword() != null ? updatedEmployee.getPassword() : existingEmployee.getPassword());
         if (updatedEmployee.getRole() != null) {
             existingEmployee.setRole(updatedEmployee.getRole());
-        }else {
-            existingEmployee.setRole(existingEmployee.getRole());
         }
+            existingEmployee.setRole(existingEmployee.getRole());
+
         //existingEmployee.setRole(Role.fromString(updatedEmployee.getRole()) != null ? updatedEmployee.getRole() : existingEmployee.getRole());
         Employee employee = employeeMapper.employeeDTOToEmployee(existingEmployee); // Преобразуем DTO в Entity
         employeeRepository.save(employee);
