@@ -79,7 +79,7 @@ public class ClientService {
 
         // Настройка сортировки
         Sort.Direction direction = Optional.ofNullable(sortDirection)
-                .map(dir -> dir.toUpperCase())
+                .map(String::toUpperCase)
                 .filter(dir -> dir.equals("ASC") || dir.equals("DESC"))
                 .map(Sort.Direction::fromString)
                 .orElse(Sort.Direction.ASC); // Значение по умолчанию

@@ -1,6 +1,7 @@
 package com.example.CRUDProject.entity;
 
 import com.example.CRUDProject.dto.EmployeeDTO;
+import com.example.CRUDProject.enums.Role;
 import jakarta.persistence.*;
 
 
@@ -24,8 +25,9 @@ public class Employee {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "role", nullable = false, length = 255)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
 
     public Integer getId() {
@@ -48,7 +50,7 @@ public class Employee {
         return password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -68,7 +70,7 @@ public class Employee {
         this.password = password;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
