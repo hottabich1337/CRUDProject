@@ -1,6 +1,7 @@
 package com.example.CRUDProject.dto;
 
 import com.example.CRUDProject.entity.Employee;
+import com.example.CRUDProject.enums.Role;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ public class EmployeeDTO {
     private String surname;
     private String email;
     private String password;
-    private String role;
+    private Role role;
     public EmployeeDTO(Employee employee) {
         this.name = employee.getName();
         this.surname = employee.getSurname();

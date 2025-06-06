@@ -2,6 +2,7 @@ package com.example.CRUDProject.dto;
 
 
 import com.example.CRUDProject.entity.Client;
+import com.example.CRUDProject.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Cascade;
@@ -14,7 +15,7 @@ public class OrderDTO {
 
     private int id;
     private LocalDate orderCreationDate;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private Integer clientId;
 
 }

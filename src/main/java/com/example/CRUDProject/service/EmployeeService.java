@@ -2,6 +2,7 @@ package com.example.CRUDProject.service;
 
 import com.example.CRUDProject.dto.EmployeeDTO;
 import com.example.CRUDProject.entity.Employee;
+import com.example.CRUDProject.enums.Role;
 import com.example.CRUDProject.mapper.EmployeeMapper;
 import com.example.CRUDProject.repository.EmployeeRepository;
 import jakarta.transaction.Transactional;
@@ -67,7 +68,12 @@ public class EmployeeService {
         existingEmployee.setName(updatedEmployee.getName() != null ? updatedEmployee.getName() : existingEmployee.getName());
         existingEmployee.setSurname(updatedEmployee.getSurname() != null ? updatedEmployee.getSurname() : existingEmployee.getSurname());
         existingEmployee.setPassword(updatedEmployee.getPassword() != null ? updatedEmployee.getPassword() : existingEmployee.getPassword());
-        existingEmployee.setRole(updatedEmployee.getRole() != null ? updatedEmployee.getRole() : existingEmployee.getRole());
+        if (updatedEmployee.getRole() != null) {
+            existingEmployee.setRole(updatedEmployee.getRole());
+        }else {
+            existingEmployee.setRole(existingEmployee.getRole());
+        }
+        //existingEmployee.setRole(Role.fromString(updatedEmployee.getRole()) != null ? updatedEmployee.getRole() : existingEmployee.getRole());
         Employee employee = employeeMapper.employeeDTOToEmployee(existingEmployee); // Преобразуем DTO в Entity
         employeeRepository.save(employee);
         return true;
