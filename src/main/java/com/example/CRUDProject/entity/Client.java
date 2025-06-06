@@ -31,6 +31,7 @@ public class Client {
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // NOT NULL
     //@JsonManagedReference
+    //@JoinColumn(name = "client_id")
     private List<Order> orders;
 
     public Integer getId() {

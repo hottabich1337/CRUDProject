@@ -29,7 +29,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Cascade({org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.PERSIST})
     //@JsonBackReference
     private Client client;
 
