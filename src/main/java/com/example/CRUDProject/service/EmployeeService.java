@@ -63,12 +63,11 @@ public class EmployeeService {
         if (existingEmployee == null) {
             return false;
         }
-
-        existingEmployee.setName(updatedEmployee.getName() != null ? updatedEmployee.getName() : existingEmployee.getName());
-        existingEmployee.setSurname(updatedEmployee.getSurname() != null ? updatedEmployee.getSurname() : existingEmployee.getSurname());
-        existingEmployee.setPassword(updatedEmployee.getPassword() != null ? updatedEmployee.getPassword() : existingEmployee.getPassword());
-        existingEmployee.setRole(updatedEmployee.getRole() != null ? updatedEmployee.getRole() : existingEmployee.getRole());
-        Employee employee = employeeMapper.employeeDTOToEmployee(existingEmployee); // Преобразуем DTO в Entity
+        Employee employee = employeeRepository.findByEmail(email);
+        employee.setName(updatedEmployee.getName() != null ? updatedEmployee.getName() : existingEmployee.getName());
+        employee.setSurname(updatedEmployee.getSurname() != null ? updatedEmployee.getSurname() : existingEmployee.getSurname());
+        employee.setPassword(updatedEmployee.getPassword() != null ? updatedEmployee.getPassword() : existingEmployee.getPassword());
+        employee.setRole(updatedEmployee.getRole() != null ? updatedEmployee.getRole() : existingEmployee.getRole());
         employeeRepository.save(employee);
         return true;
     }
