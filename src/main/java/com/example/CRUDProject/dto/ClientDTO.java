@@ -15,16 +15,7 @@ public class ClientDTO {
     private String surname;
     private String email;
     private String phone;
-    private List<Order> orders;
-
-
-    public ClientDTO(Client client) {
-        this.name = client.getName();
-        this.surname = client.getSurname();
-        this.email = client.getEmail();
-        this.phone = client.getPhone();
-        this.orders = client.getOrders();
-    }
+    private List<OrderDTO> orders;
 
     public ClientDTO() {}
 

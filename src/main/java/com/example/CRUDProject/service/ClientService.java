@@ -57,7 +57,7 @@ public class ClientService {
     public ClientDTO clientInfo(Integer id) {
         Client existingClient = clientRepository.findById(id).get();
         ClientDTO clientDTO = clientMapper.clientToClientDTO(existingClient);
-        clientDTO.setOrders(existingClient.getOrders());
+        clientDTO.setOrders(clientDTO.getOrders());
         return clientDTO;
     }
 

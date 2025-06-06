@@ -3,6 +3,7 @@ package com.example.CRUDProject.service;
 import com.example.CRUDProject.dto.OrderDTO;
 import com.example.CRUDProject.entity.Client;
 import com.example.CRUDProject.entity.Order;
+import com.example.CRUDProject.enums.OrderStatus;
 import com.example.CRUDProject.mapper.OrderMapper;
 import com.example.CRUDProject.repository.ClientRepository;
 import com.example.CRUDProject.repository.OrderRepository;
@@ -29,7 +30,8 @@ public class OrderService {
 
     public void updateOrder(Integer orderId,String orderStatus){
         Order order = orderRepository.findById(orderId).get();
-        order.setOrderStatus(orderStatus);
+        OrderStatus statusEnum = OrderStatus.fromString(orderStatus);
+        order.setOrderStatus(statusEnum);
         orderRepository.save(order);
     }
 

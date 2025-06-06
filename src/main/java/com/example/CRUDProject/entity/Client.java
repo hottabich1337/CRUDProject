@@ -30,7 +30,7 @@ public class Client {
     private String phone;
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // NOT NULL
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<Order> orders;
 
     public Integer getId() {

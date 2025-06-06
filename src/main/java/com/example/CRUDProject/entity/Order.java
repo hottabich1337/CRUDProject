@@ -1,6 +1,7 @@
 package com.example.CRUDProject.entity;
 
 
+import com.example.CRUDProject.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
@@ -22,13 +23,14 @@ public class Order {
     @CreationTimestamp
     private LocalDate orderCreationDate;
 
-    @Column
-    private String orderStatus;
+    @Column (name = "order_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @JsonBackReference
+    //@JsonBackReference
     private Client client;
 
     public int getId() {
@@ -47,11 +49,11 @@ public class Order {
         this.orderCreationDate = orderCreationDate;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
