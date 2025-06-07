@@ -8,13 +8,14 @@ import lombok.Data;
 import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 public class OrderDTO {
 
     private int id;
-    private LocalDate orderCreationDate;
+    private LocalDateTime orderCreationDate;
     private OrderStatus orderStatus;
     private Integer clientId;
 

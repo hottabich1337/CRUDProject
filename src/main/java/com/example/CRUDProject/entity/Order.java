@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,7 @@ public class Order {
 
     @Column
     @CreationTimestamp
-    private LocalDate orderCreationDate;
+    private LocalDateTime orderCreationDate;
 
     @Column (name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,11 +42,11 @@ public class Order {
         this.id = id;
     }
 
-    public LocalDate getOrderCreationDate() {
+    public LocalDateTime getOrderCreationDate() {
         return orderCreationDate;
     }
 
-    public void setOrderCreationDate(LocalDate orderCreationDate) {
+    public void setOrderCreationDate(LocalDateTime orderCreationDate) {
         this.orderCreationDate = orderCreationDate;
     }
 
