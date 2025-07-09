@@ -2,6 +2,8 @@ package com.example.CRUDProject.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "product")
@@ -19,6 +21,9 @@ public class Product {
 
     @Column
     private Double price;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders;
 
     public int getId() {
         return id;

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Primary;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -33,6 +34,14 @@ public class Order {
     @Cascade({org.hibernate.annotations.CascadeType.MERGE,org.hibernate.annotations.CascadeType.PERSIST})
     //@JsonBackReference
     private Client client;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
 
     public int getId() {
         return id;
