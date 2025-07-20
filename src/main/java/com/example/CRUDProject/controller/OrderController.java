@@ -20,29 +20,29 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/addOrder")
+    @PutMapping("/")
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {
         orderService.addOrder(orderDTO);
         return ResponseEntity.ok().body(orderDTO);
     }
 
-    @PostMapping("/updateOrder")
+    @PostMapping("/")
     public void updateOrder(@RequestParam Integer id,@RequestParam String orderStatus) {
         orderService.updateOrder(id, orderStatus);
     }
 
-    @DeleteMapping("/deleteOrder")
+    @DeleteMapping("/")
     public void deleteOrder(@RequestParam Integer id) {
         orderService.deleteOrder(id);
     }
 
-    @GetMapping("/orderInfo")
+    @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrder(@RequestParam Integer id) {
         return ResponseEntity.ok(orderService.getOrderInfo(id));
     }
 
 
-    @GetMapping("/filter")
+    @GetMapping("/")
     public Page<OrderDTO> filterAndSortOrders(
             @RequestParam(required = false) LocalDateTime orderCreationDate,
             @RequestParam(required = false) String orderStatus,
