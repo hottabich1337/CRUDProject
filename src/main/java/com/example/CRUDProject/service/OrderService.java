@@ -4,10 +4,12 @@ import com.example.CRUDProject.dto.ClientDTO;
 import com.example.CRUDProject.dto.OrderDTO;
 import com.example.CRUDProject.entity.Client;
 import com.example.CRUDProject.entity.Order;
+import com.example.CRUDProject.entity.Product;
 import com.example.CRUDProject.enums.OrderStatus;
 import com.example.CRUDProject.mapper.OrderMapper;
 import com.example.CRUDProject.repository.ClientRepository;
 import com.example.CRUDProject.repository.OrderRepository;
+import com.example.CRUDProject.repository.ProductRepository;
 import com.example.CRUDProject.specification.ClientSpecification;
 import com.example.CRUDProject.specification.OrderSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class OrderService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     public void addOrder(OrderDTO orderDTO) {
         Client client = clientRepository.findById(orderDTO.getClientId()).get();
         Order order = orderMapper.OrderDTOToOrder(orderDTO);
@@ -54,6 +59,21 @@ public class OrderService {
     public void deleteOrder(Integer orderId){
         Order order = orderRepository.findById(orderId).get();
         orderRepository.delete(order);
+    }
+
+    // Добавление товара в заказ
+    public void addProductToOrder(Integer orderId, Integer productId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Заказ не найден"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Товар не найден"));
+
+        // Добавляем товар в заказ
+        order.getProducts().add(product);
+
+        // Сохраняем заказ
+        orderRepository.save(order);
     }
 
     // Метод для фильтрации, сортировки и пагинации

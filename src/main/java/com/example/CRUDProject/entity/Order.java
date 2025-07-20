@@ -43,6 +43,10 @@ public class Order {
     )
     private List<Product> products;
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public int getId() {
         return id;
     }

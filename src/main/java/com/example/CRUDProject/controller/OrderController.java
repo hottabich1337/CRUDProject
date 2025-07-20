@@ -41,6 +41,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderInfo(id));
     }
 
+    @PutMapping("/add-product")
+    public ResponseEntity<Void> addProductToOrder(
+            @RequestParam Integer orderId,
+            @RequestParam Integer productId) {
+
+        orderService.addProductToOrder(orderId, productId);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/")
     public Page<OrderDTO> filterAndSortOrders(
