@@ -1,5 +1,6 @@
 package com.example.CRUDProject;
 
+import com.example.CRUDProject.dto.ClientDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,7 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CrudProjectApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void addClient(ClientDTO clientDTO) {
+
 	}
 
 }
