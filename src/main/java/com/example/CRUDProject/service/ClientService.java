@@ -43,14 +43,22 @@ public class ClientService {
     }
 
     public void updateClient(ClientDTO clientDTO) {
+        Client existingClient = clientRepository.findByEmail(clientDTO.getEmail()).
+                orElseThrow(() -> new RuntimeException("Клиент с email " + clientDTO.getEmail() + " не найден"));;
 
-        Client existingClient = clientRepository.findByEmail(clientDTO.getEmail());
-        ClientDTO exsistingClientDTO = clientMapper.clientToClientDTO(existingClient);
-        if (exsistingClientDTO != null) {
-            existingClient.setName(clientDTO.getName()!=null ? clientDTO.getName():exsistingClientDTO.getName());
-            existingClient.setSurname(clientDTO.getSurname()!=null ? clientDTO.getSurname():exsistingClientDTO.getSurname());
-            existingClient.setPhone(clientDTO.getPhone()!=null ? clientDTO.getPhone():exsistingClientDTO.getPhone());
+        // Обновляем только непустые поля
+        if (clientDTO.getName() != null && !clientDTO.getName().isEmpty()) {
+            existingClient.setName(clientDTO.getName());
         }
+
+        if (clientDTO.getSurname() != null && !clientDTO.getSurname().isEmpty()) {
+            existingClient.setSurname(clientDTO.getSurname());
+        }
+
+        if (clientDTO.getPhone() != null && !clientDTO.getPhone().isEmpty()) {
+            existingClient.setPhone(clientDTO.getPhone()); // ← проверьте имя сеттера!
+        }
+
         clientRepository.save(existingClient);
     }
 

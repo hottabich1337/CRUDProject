@@ -4,14 +4,15 @@ import com.example.CRUDProject.dto.ClientDTO;
 import com.example.CRUDProject.entity.Client;
 import com.example.CRUDProject.mapper.ClientMapper;
 import com.example.CRUDProject.repository.ClientRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-class ClientServiceTest {
+class ClientServiceModuleTest {
 
 
     @Mock
@@ -66,11 +67,11 @@ class ClientServiceTest {
 
 
 
- /*   @Test
+   @Test
     void updateClient_ExistingEmail_ShouldUpdateFields() {
         // Arrange
-        when(clientRepository.findByEmail("ivan@example.com")).thenReturn(client);;
-        when(clientRepository.save(client)).thenReturn(client);
+        when(clientRepository.findByEmail("ivan@example.com")).thenReturn(Optional.of(client));;
+       //     when(clientRepository.save(client)).thenReturn(client);
 
         // Modify DTO
         ClientDTO updatedDTO = new ClientDTO();
@@ -80,12 +81,16 @@ class ClientServiceTest {
 
         // Act
         clientService.updateClient(updatedDTO);
-
+       // Assert: используем ArgumentCaptor, чтобы проверить сохранённый объект
+       ArgumentCaptor<Client> captor = ArgumentCaptor.forClass(Client.class);
+       verify(clientRepository).save(captor.capture());
         // Assert
         assertEquals("Петров", client.getSurname());
         assertEquals("89201111001", client.getPhone());
         verify(clientRepository).save(client);
-    }*/
+    }
+
+
     @Test
     void addClient() {
     }
