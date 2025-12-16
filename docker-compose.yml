@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=crud_db
+      - DB_USER=postgres
+      - DB_PASSWORD=secret
+      - SERVER_PORT=8081
+    depends_on:
+      - postgres
+    networks:
+      - crud-network
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: crud_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crud-network
+
+volumes:
+  postgres_
+
+networks:
+  crud-network:
+    driver: bridge
