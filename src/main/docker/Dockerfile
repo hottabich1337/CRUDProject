@@ -1,11 +1,10 @@
-# Используем OpenJDK 21
-FROM openjdk:21-jre-slim
+FROM eclipse-temurin:21-jre-alpine
 
-# Копируем JAR-файл
+# Для отладки (опционально)
+RUN apk add --no-cache curl
+
+# Копируем JAR
 COPY target/*.jar app.jar
 
-# Указываем переменные окружения по умолчанию
-ENV SPRING_PROFILES_ACTIVE=docker
-
-# Запуск приложения
+# Запускаем приложение
 ENTRYPOINT ["java", "-jar", "/app.jar"]

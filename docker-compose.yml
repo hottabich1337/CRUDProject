@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -16,7 +14,8 @@ services:
       - DB_PASSWORD=secret
       - SERVER_PORT=8081
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - crud-network
 
@@ -32,9 +31,14 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - crud-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d crud_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  postgres_
+  postgres_data:
 
 networks:
   crud-network:

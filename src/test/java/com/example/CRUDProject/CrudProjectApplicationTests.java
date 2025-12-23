@@ -7,9 +7,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class CrudProjectApplicationTests {
 
-	@Test
-	public void addClient(ClientDTO clientDTO) {
-
-	}
 
 }
